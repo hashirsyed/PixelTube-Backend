@@ -145,7 +145,8 @@ module.exports = {
             model : Playlists,
             as : "playlist"
           }
-        ]
+        ],
+        order: [["createdAt", "DESC"]],
       });
 
       res.status(200).send({
@@ -159,18 +160,18 @@ module.exports = {
   edit: async function (req, res) {
     try {
       let { name, description } = req.body;
-      const { userId } = req.params;
+      const { playlistId } = req.params;
 
-      if (!userId) {
+      if (!playlistId) {
         throw generateErrorInstance({
           status: 404,
-          message: "User Id is required",
+          message: "Playlist Id is required",
         });
       }
 
       let playlist = await Playlists.findOne({
         where: {
-          fkUserId: userId,
+          id: playlistId,
         },
       });
 
@@ -186,6 +187,40 @@ module.exports = {
       res
         .status(200)
         .send({ message: "Playlist updated successfully", playlist });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  getPlaylistDetails: async function (req, res) {
+    try {
+      let { playlistId } = req.params;
+      let playlist = await Playlists.findOne({
+        where: {
+          id: playlistId,
+        },
+      });
+
+      res.status(201).send({
+        playlist,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  deletePlaylist: async function (req, res) {
+    try {
+      let { playlistId } = req.params;
+      let playlist = await Playlists.destroy({
+        where: {
+          id: playlistId,
+        },
+      });
+      res.status(201).send({
+        message : "Playlist deleted successfully",
+        playlist,
+      });
     } catch (err) {
       console.log(err);
       res.status(500).send(err.message || "Something went wrong!");
