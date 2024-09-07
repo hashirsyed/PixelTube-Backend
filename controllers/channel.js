@@ -292,4 +292,31 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  getAllSubscribers: async function (req, res) {
+    try {
+      const { channelId } = req.params;
+      console.log(`channelId : ${channelId}`)
+      let channelSubscribers = await ChannelSubscribers.findAll({
+        where: {
+          fkChannelId: channelId,
+        },
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: Users,
+            as: "user",
+            attributes: ["profileUrl"],
+            include: {
+              model: Channels,
+              as: "channel",
+            },
+          },
+        ],
+      });
+      res.status(201).send(channelSubscribers);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
 };

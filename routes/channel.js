@@ -15,6 +15,7 @@ router.put("/:userId/channel/edit", auth , controller.edit);
 router.post("/:userId/channel/:channelId/addSubscriber", auth , controller.addSubscriber);
 router.get("/:userId/channel/:channelId/checkSubscriber", auth , controller.findSubscriber);
 router.get("/channel/:channelId/subscribers/latest", controller.getLatestSubscribers);
+router.get("/channel/:channelId/subscribers/all", controller.getAllSubscribers);
 router.get("/:userId/channel/subscription/getAll", auth ,  controller.findAllSubscriptions);
 
 module.exports = router;
