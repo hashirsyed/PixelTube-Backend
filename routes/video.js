@@ -12,6 +12,7 @@ router.get("/videos/getCategoryVideos", controller.getCategoryVideo);
 router.post("/:userId/channel/:channelId/videos/upload", auth , controller.upload);
 router.get("/channel/:channelId/videos/getAll", controller.getAllVideos);
 router.get("/:userId/videos/getAllSubsVideos", auth , controller.findAllSubscriptionVideos);
+router.put("/:userId/video/:videoId/edit", auth , controller.edit);
 router.get("/videos/:videoId/suggestedVideos", controller.getSuggestedVideos);
 router.get("/videos/:videoId", controller.getOne);
 router.get("/channel/:channelId/videos/latest", controller.getLatestVideo);

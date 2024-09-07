@@ -122,33 +122,51 @@ module.exports = {
   },
   findAllVideos: async function (req, res) {
     try {
-      let { playlistId } = req.params;
-
+      let { userId, playlistId } = req.params;
+  
+      // Find the playlist and check if it belongs to the user
+      let playlist = await Playlists.findOne({
+        where: {
+          id: playlistId,
+          fkUserId: userId,  // Ensure the playlist belongs to the user
+        },
+      });
+  
+      // If no playlist is found, or user doesn't own the playlist, throw an error
+      if (!playlist) {
+        return res.status(403).send({
+          status: 403,
+          message: "You do not have permission to access this playlist.",
+        });
+      }
+  
+      // Fetch videos from the playlist
       let videos = await PlaylistVideos.findAll({
         where: {
           fkPlaylistId: playlistId,
         },
-        include : [
+        include: [
           {
-            model : Videos,
-            as : "video",
-            include : {
-              model : Channels,
-              as : "channel",
-              include : {
-                model : Users,
-                as : "user"
-              }
-            }
+            model: Videos,
+            as: "video",
+            include: {
+              model: Channels,
+              as: "channel",
+              include: {
+                model: Users,
+                as: "user",
+              },
+            },
           },
           {
-            model : Playlists,
-            as : "playlist"
-          }
+            model: Playlists,
+            as: "playlist",
+          },
         ],
         order: [["createdAt", "DESC"]],
       });
-
+  
+      // Send the list of videos
       res.status(200).send({
         videos,
       });
@@ -157,6 +175,7 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  
   edit: async function (req, res) {
     try {
       let { name, description } = req.body;
