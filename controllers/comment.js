@@ -110,5 +110,50 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  getAll: async function (req, res) {
+    try {
+      const { channelId } = req.params;
+      let videos = await Videos.findAll({
+        where: {
+          fkChannelId: channelId,
+        },
+      });
+      videos = videos.map((video) => video.id);
+
+      let comments = await Comments.findAll({
+        where: {
+          fkVideoId: videos,
+          fkChannelId : {
+            [Op.ne] : channelId
+          }
+        },
+
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            attributes: ["id", "name", "handleBy"],
+            include: {
+              model: Users,
+              as: "user",
+              attributes: ["profileUrl"],
+            },
+          },
+          {
+            model: Videos,
+            as: "video",
+            attributes: ["thumbnail","title"],
+          },
+        ],
+      });
+      
+
+      res.status(200).send(comments);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
   
 };

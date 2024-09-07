@@ -11,5 +11,6 @@ const controller = require("../controllers/comment");
 router.post("/:userId/channel/:channelId/videos/:videoId/comments/create", auth , controller.create);
 router.get("/:userId/channel/:channelId/videos/:videoId/comments/getAll", auth , controller.getAllComments);
 router.get("/channel/:channelId/comments/latest", controller.getLatestComments);
+router.get("/channel/:channelId/comments/all", controller.getAll);
 
 module.exports = router;

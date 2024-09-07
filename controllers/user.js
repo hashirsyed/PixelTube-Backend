@@ -93,6 +93,13 @@ module.exports = {
         where: {
           email,
         },
+        include : [
+          {
+            model : Channels,
+            as : "channel",
+            attributes : ["id"]
+          }
+        ]
       });
 
       if (!user) {

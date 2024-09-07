@@ -1,4 +1,3 @@
-const { Op } = require("sequelize");
 const { Channels, sequelize } = require("../models");
 const { Users } = require("../models");
 const { ChannelSubscribers } = require("../models");
@@ -270,9 +269,7 @@ module.exports = {
       console.log(`channelId : ${channelId}`)
       let channelSubscribers = await ChannelSubscribers.findAll({
         where: {
-          fkChannelId: {
-            [Op.ne] : channelId
-          },
+          fkChannelId: channelId,
         },
         order: [["createdAt", "DESC"]],
         limit: 4,

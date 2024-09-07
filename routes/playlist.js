@@ -16,5 +16,6 @@ router.get("/:userId/playlist/videos/:videoId/findVideo", auth , controller.find
 router.get("/:userId/playlist/:playlistId/allVideos", auth , controller.findAllVideos);
 router.get("/:userId/playlist/:playlistId", auth , controller.getPlaylistDetails);
 router.delete("/:userId/playlist/:playlistId/delete", auth , controller.deletePlaylist);
+router.delete("/:userId/playlist/:playlistId/video/:videoId/delete", auth , controller.removeVideoFromPlaylist);
 
 module.exports = router;

@@ -226,4 +226,22 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  removeVideoFromPlaylist: async function (req, res) {
+    try {
+      let { videoId , playlistId } = req.params;
+      let video = await PlaylistVideos.destroy({
+        where: {
+          fkVideoId: videoId,
+          fkPlaylistId: playlistId,
+        },
+      });
+      res.status(201).send({
+        message : "Video removed from playlist successfully",
+        video,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
 };

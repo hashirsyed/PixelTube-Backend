@@ -8,7 +8,13 @@ const { DisLikes } = require("../models");
 const { ChannelSubscribers } = require("../models");
 const { Views } = require("../models");
 const { generateErrorInstance } = require("../utils");
-
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
 module.exports = {
   upload: async function (req, res) {
     try {
@@ -430,6 +436,94 @@ module.exports = {
       res.status(500).send({ message: "Internal server error" });
     }
   },
+  logInHome: async function (req, res) {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ message: "User Id are required" });
+      }
+      let subscriptions = await ChannelSubscribers.findAll({
+        where: {
+          fkUserId: userId,
+        },
+      });
+      subscriptions = subscriptions.map(
+        (subscription) => subscription.fkChannelId
+      );
+      const subscriptionVideos = await Videos.findAll({
+        where: {
+          fkChannelId: subscriptions,
+        },
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            attributes: ["id", "name"],
+            include: {
+              model: Users,
+              as: "user",
+              attributes: ["profileUrl"],
+            },
+          },
+        ],
+      });
+      const trendingVideos = await Videos.findAll({
+        limit: 10,
+        order: [['views', 'DESC']],
+        attributes: ['id', 'title', 'thumbnail', 'views', 'createdAt'],
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            attributes: ["id", "name"],
+            include: {
+              model: Users,
+              as: "user",
+              attributes: ["profileUrl"],
+            },
+          },
+        ],
+      });
+  
+      // Fetch recent videos (sorted by latest uploaded)
+      const recentVideos = await Videos.findAll({
+        limit: 20,
+        order: [['createdAt', 'DESC']],
+        attributes: ['id', 'title', 'thumbnail', 'views', 'createdAt'],
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            attributes: ["id", "name"],
+            include: {
+              model: Users,
+              as: "user",
+              attributes: ["profileUrl"],
+            },
+          },
+        ],
+      });
+  
+      let allVideos = [
+        ...trendingVideos,
+        ...recentVideos,
+        ...subscriptionVideos,
+      ];
+  
+      // Remove duplicate videos by filtering based on unique video IDs
+      allVideos = Array.from(new Set(allVideos.map(video => video.id)))
+        .map(id => allVideos.find(video => video.id === id));
+  
+      // Shuffle the combined array of videos
+      const videos = shuffleArray(allVideos);
+
+      res.status(200).send(videos);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).send({ message: "Internal server error" });
+    }
+  },
   edit: async function (req, res) {
     try {
       let { title, description, tags, category, thumbnail } = req.body;
@@ -547,6 +641,23 @@ module.exports = {
     } catch (error) {
       console.error("Error counting view", error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  },
+  delete: async function (req, res) {
+    try {
+      let { videoId } = req.params;
+      let video = await Videos.destroy({
+        where: {
+          id: videoId,
+        },
+      });
+      res.status(201).send({
+        message : "Video Deleted successfully",
+        video,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
     }
   },
 };
