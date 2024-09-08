@@ -39,7 +39,9 @@ module.exports = {
   },
   getAllComments: async function (req, res) {
     try {
-      let { videoId } = req.params;
+      let { videoId } = req.params;// Assuming you send the creator's channelId in the request
+  
+      // Get all comments for the video
       let comments = await Comments.findAll({
         where: {
           fkVideoId: videoId,
@@ -56,9 +58,22 @@ module.exports = {
               attributes: ["profileUrl"],
             },
           },
+          {
+            model : Videos,
+            as : "video",
+            attributes : ["fkChannelId"]
+          }
         ],
       });
-      res.status(201).send(comments);
+  
+      // Separate the creator's comment from the rest
+      let creatorComment = comments.filter(comment => comment.channel.id === comment.video.fkChannelId);
+      let otherComments = comments.filter(comment => comment.channel.id !== comment.video.fkChannelId);
+  
+      // Combine the creator's comment at the top
+      let sortedComments = [...creatorComment, ...otherComments];
+  
+      res.status(201).send(sortedComments);
     } catch (err) {
       console.log(err);
       res.status(500).send(err.message || "Something went wrong!");

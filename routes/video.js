@@ -22,7 +22,6 @@ router.post("/:userId/channel/:channelId/video/:videoId/addDisLike", auth , cont
 router.get("/:userId/channel/:channelId/video/:videoId/findDisLike", auth , controller.findDisLike);
 router.post("/:userId/video/:videoId/view", auth , controller.countView);
 router.get("/:userId/channel/:channelId/videos/logInHome", auth , controller.logInHome);
-// router.get("/:userId/channel/:channelId/videos/logOffHome", auth , controller.logOffHome);
 router.delete("/:userId/video/:videoId/delete", auth , controller.delete);
 router.get("/search", controller.searchVideos);
 
