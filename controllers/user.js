@@ -5,8 +5,6 @@ const { Channels } = require("../models");
 const { generateErrorInstance } = require("../utils");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client();
 const moment = require("moment");
 module.exports = {
   signUp: async function (req, res) {
@@ -172,54 +170,6 @@ module.exports = {
       await user.save();
 
       res.status(200).send({ message: "Profile Image deleted successfully" });
-    } catch (err) {
-      console.log(err);
-      res.status(500).send(err.message || "Something went wrong!");
-    }
-  },
-  google: async function (req, res) {
-    try {
-      const { googleAuthorizationToken, flow } = req.body;
-
-      let payload;
-      if (flow === "implicit") {
-        const tokenInfo = await client.getTokenInfo(googleAuthorizationToken);
-        payload = tokenInfo;
-      } else {
-        const ticket = await client.verifyIdToken({
-          idToken: googleAuthorizationToken,
-          audience: config.get("googleClientId"),
-        });
-        payload = ticket.payload;
-        console.log(ticket);
-      }
-
-      const googleSub = payload.sub;
-      const email = payload.email;
-      const picture = payload.picture;
-      const name = payload.name;
-
-      let user = await Users.findOne({
-        where: {
-          email,
-        },
-      });
-      if (user) {
-        user = await user.update({
-          googleSub,
-        });
-      } else if (!user) {
-        user = await Users.create({
-          name,
-          email,
-          profileUrl: picture,
-        });
-      }
-      user = await user.toJSON();
-      const token = jwt.sign(user, config.get("jwt_secret"), {
-        expiresIn: "365d",
-      });
-      res.status(201).send({ user, token });
     } catch (err) {
       console.log(err);
       res.status(500).send(err.message || "Something went wrong!");
