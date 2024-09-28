@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       videoUrl: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       title: {
         allowNull: false,
         type: DataTypes.STRING,
       },
       description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       fkChannelId: {

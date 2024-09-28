@@ -15,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     bio: {
       allowNull: true,
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     coverUrl: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     handleBy: {
