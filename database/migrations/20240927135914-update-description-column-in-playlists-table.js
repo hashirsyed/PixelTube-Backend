@@ -1,12 +1,12 @@
 "use strict";
 const {DataTypes} =require("sequelize")
 
-const table = "channel";
+const table = "playlists";
 
 
 module.exports = {
   up: async function (queryInterface) {
-    await queryInterface.changeColumn(table,"coverUrl",{
+    await queryInterface.changeColumn(table,"description",{
       allowNull: false,
         type: DataTypes.TEXT,
         defaultValue : ""
