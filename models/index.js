@@ -9,16 +9,21 @@ const config = require("../config");
 const { camelCase, upperFirst } = require("lodash");
 const db = {};
 
-let sequelize = new Sequelize(
-  config.get("db.name"),
-  config.get("db.username"),
-  config.get("db.password"),
-  {
-    host: config.get("db.host"),
-    port: config.get("db.custom_port"),
-    dialect: "mysql",
-  }
-);
+let sequelize;
+if (process.env.CLEARDB_DATABASE_URL) {
+  sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
+} else {
+  sequelize = new Sequelize(
+    config.get("db.name"),
+    config.get("db.username"),
+    config.get("db.password"),
+    {
+      host: config.get("db.host"),
+      port: config.get("db.custom_port"),
+      dialect: "mysql",
+    }
+  );
+}
 
 sequelize
   .authenticate()
