@@ -1,6 +1,7 @@
 // const { secret } = require("../constants");
 const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
+const config = require("../config");
 
 module.exports = async (req, res, next) => {
   try {
