@@ -3,7 +3,7 @@ name: Deploy Backend to Heroku
 on:
   push:
     branches:
-      - main
+      - github-actions-setup
 
 jobs:
   deploy:
