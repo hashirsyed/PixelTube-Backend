@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0
       },
       thumbnail: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       tags : {
