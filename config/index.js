@@ -21,39 +21,43 @@ var config = convict({
     env: "PORT",
     arg: "port",
   },
-  db: {
-    host: {
-      doc: "Database host name/IP",
-      format: String,
-      default: "127.0.0.1",
-      env: "DB_HOST"
+  db: process.env.CLEARDB_DATABASE_URL
+    ? {
+      url: process.env.CLEARDB_DATABASE_URL,
+    }
+    : {
+      host: {
+        doc: "Database host name/IP",
+        format: String,
+        default: "127.0.0.1",
+        env: "DB_HOST"
+      },
+      name: {
+        doc: "Database name",
+        format: String,
+        default: "database_development",
+        env: "DB_NAME"
+      },
+      username: {
+        doc: "Username of database user",
+        format: String,
+        default: "root",
+        env: "DB_USER"
+      },
+      password: {
+        doc: "Password of the database user",
+        format: "*",
+        default: null,
+        env: "DB_PASSWORD"
+      },
+      custom_port: {
+        doc: "Database port",
+        format: "port",
+        default: 3306,
+        env: "DB_PORT",
+      },
     },
-    name: {
-      doc: "Database name",
-      format: String,
-      default: "database_development",
-      env: "DB_NAME"
-    },
-    username: {
-      doc: "Username of database user",
-      format: String,
-      default: "root",
-      env: "DB_USER"
-    },
-    password: {
-      doc: "Password of the database user",
-      format: "*",
-      default: null,
-      env: "DB_PASSWORD"
-    },   
-  custom_port: {
-    doc: "Database port",
-    format: "port",
-    default: 3306,
-    env: "DB_PORT",
-  },
-  },
-  jwt_secret: {
+  jwt_secret: process.env.JWT_SECRET || {
     doc: "Secret for JWT",
     format: String,
     default: "",

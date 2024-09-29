@@ -56,5 +56,8 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "engines": {
+    "node": "16.x"
   }
 }

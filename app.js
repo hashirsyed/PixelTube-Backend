@@ -40,7 +40,12 @@ app.use(
     ], // remove extra details from log
   })
 );
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.static("public"));
 
 // routes
