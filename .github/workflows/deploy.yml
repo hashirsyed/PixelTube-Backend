@@ -21,7 +21,7 @@ jobs:
     - name: Deploy to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
-        branch: main
+        branch: github-actions-setup
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         heroku_app_name: pixeltube-backend
         heroku_email: ahmad1911491@gmail.com
