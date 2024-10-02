@@ -247,7 +247,7 @@ module.exports = {
           {
             model : Channels,
             as : "channel",
-            attributes: ["name","handleBy","totalSubscribers"],
+            attributes: ["id","name","handleBy","totalSubscribers"],
             include : {
               model : Users,
               as : "user",
