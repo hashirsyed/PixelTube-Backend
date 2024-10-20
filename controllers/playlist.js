@@ -9,7 +9,7 @@ const { generateErrorInstance } = require("../utils");
 module.exports = {
   create: async function (req, res) {
     try {
-      let { name, description } = req.body;
+      let { name, description, visibility } = req.body;
       const { userId } = req.params;
       if (!name && !userId) {
         throw generateErrorInstance({
@@ -32,6 +32,7 @@ module.exports = {
       playlist = await Playlists.create({
         name,
         description,
+        visibility,
         fkUserId: userId,
       });
       playlist = await playlist.toJSON();
@@ -58,7 +59,7 @@ module.exports = {
             as: "playlistvideo",
           },
         ],
-        order: [["createdAt", "DESC"]],
+        order: [["createdAt", "DESC"]]
       });
 
       res.status(200).send({
@@ -178,7 +179,7 @@ module.exports = {
   
   edit: async function (req, res) {
     try {
-      let { name, description } = req.body;
+      let { name, description, visibility } = req.body;
       const { playlistId } = req.params;
 
       if (!playlistId) {
@@ -200,6 +201,7 @@ module.exports = {
       await playlist.update({
         name,
         description,
+        visibility
       });
 
 

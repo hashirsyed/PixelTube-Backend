@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      visibility: {
+        type: DataTypes.ENUM('public','private'),
+      allowNull: false,
+      defaultValue: 'private',
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.INTEGER,
