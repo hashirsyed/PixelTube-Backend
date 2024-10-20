@@ -70,6 +70,35 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  getVisiblePlaylist: async function (req, res) {
+    try {
+      const { query } = req.query;
+      const {userId} = req.params;
+    if (!query) {
+      return res.status(400).send("Query parameter is missing");
+    }
+      let playlists = await Playlists.findAll({
+        where: {
+          fkUserId : userId,
+          visibility : query
+        },
+        include: [
+          {
+            model: PlaylistVideos,
+            as: "playlistvideo",
+          },
+        ],
+        order: [["createdAt", "DESC"]]
+      });
+
+      res.status(200).send({
+        playlists,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
   addVideo: async function (req, res) {
     try {
       let { playlistId, videoId } = req.params;

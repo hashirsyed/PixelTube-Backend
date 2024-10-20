@@ -9,6 +9,7 @@ const controller = require("../controllers/playlist.js");
 
 // Routes
 router.post("/:userId/playlist/create", auth , controller.create);
+router.get("/:userId/playlist/getVisible", controller.getVisiblePlaylist);
 router.get("/:userId/playlist/getAll", auth , controller.getAll);
 router.put("/:userId/playlist/:playlistId/edit", auth , controller.edit);
 router.post("/:userId/playlist/:playlistId/videos/:videoId/addVideo", auth , controller.addVideo);

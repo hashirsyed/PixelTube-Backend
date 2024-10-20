@@ -82,7 +82,7 @@ module.exports = {
           {
             model: Users,
             as: "user",
-            attributes: ["profileUrl"],
+            attributes: ["id","profileUrl"],
           },
         ],
       });
