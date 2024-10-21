@@ -154,19 +154,27 @@ module.exports = {
     try {
       let { userId, playlistId } = req.params;
   
-      // Find the playlist and check if it belongs to the user
+      // Find the playlist
       let playlist = await Playlists.findOne({
         where: {
           id: playlistId,
-          fkUserId: userId,  // Ensure the playlist belongs to the user
         },
       });
   
-      // If no playlist is found, or user doesn't own the playlist, throw an error
+      // Check if the playlist exists
       if (!playlist) {
+        return res.status(404).send({
+          status: 404,
+          message: "Playlist not found.",
+        });
+      }
+  
+      // Check playlist visibility
+      if (playlist.visibility === "private" && playlist.fkUserId !== userId) {
+        // If the playlist is private and doesn't belong to the user, return an error
         return res.status(403).send({
           status: 403,
-          message: "You do not have permission to access this playlist.",
+          message: "You do not have permission to access this private playlist.",
         });
       }
   
@@ -205,6 +213,7 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  
   
   edit: async function (req, res) {
     try {
