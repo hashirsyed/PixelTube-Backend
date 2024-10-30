@@ -170,12 +170,13 @@ module.exports = {
       }
   
       // Check playlist visibility
-      if (playlist.visibility === "private" && playlist.fkUserId !== userId) {
-        // If the playlist is private and doesn't belong to the user, return an error
+      if (playlist.visibility === "private" && playlist.fkUserId != userId) {
         return res.status(403).send({
           status: 403,
           message: "You do not have permission to access this private playlist.",
+          
         });
+        
       }
   
       // Fetch videos from the playlist
@@ -260,7 +261,7 @@ module.exports = {
         },
       });
 
-      res.status(201).send({
+      res.status(200).send({
         playlist,
       });
     } catch (err) {
