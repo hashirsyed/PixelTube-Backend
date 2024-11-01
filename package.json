@@ -1,7 +1,7 @@
 {
-  "name": "node-boiler-plate-app",
+  "name": "pixeltube-backend",
   "version": "0.0.1",
-  "description": "Boiler Plate Application of Node",
+  "description": "This is the backend of PixelTube",
   "scripts": {
     "start": "nodemon server.js | ./node_modules/.bin/bunyan",
     "server": "nodemon server.js | ./node_modules/.bin/bunyan",
@@ -14,6 +14,8 @@
     "db:migrate": "npx sequelize db:migrate",
     "db:migrate:create": "npx sequelize migration:generate --name",
     "db:migrate:undo": "npx sequelize db:migrate:undo",
+    "prebuild": "npm install husky --save-dev",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -47,6 +49,7 @@
   "devDependencies": {
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.6",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "pretty-quick": "^3.1.3",
