@@ -14,8 +14,6 @@
     "db:migrate": "npx sequelize db:migrate",
     "db:migrate:create": "npx sequelize migration:generate --name",
     "db:migrate:undo": "npx sequelize db:migrate:undo",
-    "prebuild": "npm install husky --save-dev",
-    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
