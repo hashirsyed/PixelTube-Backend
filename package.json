@@ -2,6 +2,10 @@
   "name": "pixeltube-backend",
   "version": "0.0.1",
   "description": "This is the backend of PixelTube",
+  "main": "server.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "start": "nodemon server.js | ./node_modules/.bin/bunyan",
     "server": "nodemon server.js | ./node_modules/.bin/bunyan",
