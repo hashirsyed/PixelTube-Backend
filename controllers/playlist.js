@@ -199,7 +199,7 @@ module.exports = {
           },
           {
             model: Playlists,
-            as: "playlist",
+            as: "playlist"
           },
         ],
         order: [["createdAt", "DESC"]],
