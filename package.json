@@ -2,16 +2,16 @@
   "name": "pixeltube-backend",
   "version": "0.0.1",
   "description": "This is the backend of PixelTube",
-  "main": "server.js",
+  "main": "index.js",
   "engines": {
     "node": "20.x"
   },
   "scripts": {
-    "dev": "nodemon server.js | ./node_modules/.bin/bunyan",
-  "start": "node server.js",
-    "server": "nodemon server.js | ./node_modules/.bin/bunyan",
-    "start-server": "./node_modules/pm2/bin/pm2 start server.js",
-    "stop-server": "./node_modules/pm2/bin/pm2 stop server.js",
+    "dev": "nodemon index.js | ./node_modules/.bin/bunyan",
+  "start": "node index.js",
+    "server": "nodemon index.js | ./node_modules/.bin/bunyan",
+    "start-server": "./node_modules/pm2/bin/pm2 start index.js",
+    "stop-server": "./node_modules/pm2/bin/pm2 stop index.js",
     "logs": "./node_modules/pm2/bin/pm2 logs",
     "test": "npm run test",
     "lint": "npx eslint .",

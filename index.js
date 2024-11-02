@@ -1,4 +1,4 @@
-const config = require("./config");
+const config = require("./config/index.js");
 const app = require("./app.js");
 const port = config.get("port");
 
