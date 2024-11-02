@@ -50,7 +50,6 @@ app.use("/api", router);
 app.use((req, res) => {
   return res.status(404).send("Error 404, Route not found");
 });
-
 // error handling
 app.use((err, req, res, next) => {
   // for now log the error and return 500; need to handle it differently in future
