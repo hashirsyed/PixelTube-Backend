@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon server.js | ./node_modules/.bin/bunyan",
+    "postinstall": "ls node_modules/mysql2",
     "start": "node server.js",
     "server": "nodemon server.js | ./node_modules/.bin/bunyan",
     "start-server": "./node_modules/pm2/bin/pm2 start server.js",
