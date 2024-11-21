@@ -99,6 +99,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "fkVideoId",
       as: "view",
     });
+    Video.hasOne(models.PromotionVideos, {
+      foreignKey: "fkVideoId",
+      as: "promotionVideo",
+    });
     Video.belongsToMany(models.Playlists, {
       through: models.PlaylistVideos,
       foreignKey: "fkVideoId",

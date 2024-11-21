@@ -15,6 +15,7 @@ router.get("/:userId/videos/getAllSubsVideos", auth , controller.findAllSubscrip
 router.put("/:userId/video/:videoId/edit", auth , controller.edit);
 router.get("/videos/:videoId/suggestedVideos", controller.getSuggestedVideos);
 router.get("/videos/:videoId", controller.getOne);
+router.get("/videos", controller.getOneByTitle);
 router.get("/channel/:channelId/videos/latest", controller.getLatestVideo);
 router.post("/:userId/channel/:channelId/video/:videoId/addLike", auth , controller.addLike);
 router.get("/:userId/channel/:channelId/video/:videoId/findLike", auth , controller.findLike);

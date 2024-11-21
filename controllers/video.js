@@ -348,6 +348,32 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  getOneByTitle: async function (req, res) {
+    try {
+      let { query } = req.query;
+      let video = await Videos.findOne({
+        where: {
+          title: query,
+        },
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            attributes: ["id", "name", "totalSubscribers"],
+            include: {
+              model: Users,
+              as: "user",
+              attributes: ["profileUrl"],
+            },
+          },
+        ],
+      });
+      res.status(200).send(video);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
   getLatestVideo: async function (req, res) {
     try {
       const { channelId } = req.params;
