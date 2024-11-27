@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
     if (!token) {
       return res.status(404).send("Token is required");
     }
-    const decodedToken = await jwt.verify(token,"JWTSECRET");
+    const decodedToken = await jwt.verify(token,"JWT_SECRET");
     if (!decodedToken) {
       return res.status(404).send("Invalid Token");
     }
