@@ -56,7 +56,7 @@ module.exports = {
         profileUrl,
       });
       user = await user.toJSON();
-      const token = jwt.sign(user, config.get("jwt_secret"), {
+      const token = jwt.sign(user,"JWT_SECRET", {
         expiresIn: "365d",
       });
       let channel = Channels.findOne({
@@ -118,7 +118,7 @@ module.exports = {
       user = await user.toJSON();
       delete user.password;
 
-      const token = jwt.sign(user, config.get("jwt_secret"), {
+      const token = jwt.sign(user,"JWT_SECRET", {
         expiresIn: "365d",
       });
 
