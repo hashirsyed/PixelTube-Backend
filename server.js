@@ -18,3 +18,5 @@ console.log({
 
 // Example logging to ensure config is loaded correctly
 console.log('Loaded configuration:', JSON.stringify(config, null, 2));
+console.log('Loaded Environment Config:', config.get('db'));
+

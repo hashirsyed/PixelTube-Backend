@@ -70,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
       as: "users",
     });
     Channel.hasMany(models.Videos, { foreignKey: "fkChannelId", as: "video" });
+    Channel.hasMany(models.PVideos, { foreignKey: "fkChannelId", as: "pVideo" });
     Channel.hasMany(models.ChannelSubscribers, {
       foreignKey: "fkChannelId",
       as: "channelsubscriber",

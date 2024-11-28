@@ -7,6 +7,7 @@ const { Likes } = require("../models");
 const { DisLikes } = require("../models");
 const { ChannelSubscribers } = require("../models");
 const { Views } = require("../models");
+const { PVideos } = require("../models");
 const { generateErrorInstance } = require("../utils");
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -49,7 +50,7 @@ module.exports = {
       }
       tags = tags.toString();
 
-      video = await Videos.create({
+      video = await PVideos.create({
         videoUrl,
         title,
         description,
@@ -66,6 +67,86 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  uploadS: async function (req, res) {
+    try {
+      let { channelId , videoUrl, title, description, thumbnail, tags, category } = req.body;
+      const {videoId} = req.params;
+  
+      if (
+        !videoUrl &&
+        !title &&
+        !description &&
+        !thumbnail &&
+        !tags &&
+        !category &&
+        !channelId
+      ) {
+        throw generateErrorInstance({
+          status: 404,
+          message: "Required fields cannot be empty",
+        });
+      }
+  
+      // Check if the video already exists
+      let video = await Videos.findOne({
+        where: {
+          videoUrl,
+        },
+      });
+  
+      if (video) {
+        throw generateErrorInstance({
+          status: 409,
+          message: "Video already exists",
+        });
+      }
+      
+  
+      // Convert tags to a string if not already
+      tags = tags.toString();
+  
+      // Create a new video entry
+      video = await Videos.create({
+        videoUrl,
+        title,
+        description,
+        fkChannelId: channelId,
+        thumbnail,
+        tags,
+        category,
+      });
+  // Delete associated video from PVideos if it exists
+  await PVideos.destroy({
+    where: {
+      id : videoId, // Assuming `videoUrl` is the identifier in `PVideos`
+    },
+  });
+      video = await video.toJSON();
+  
+      res.status(201).send({ message: "Video Uploaded Successfully", video });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  pDelete: async function (req, res) {
+    try {
+      const {videoId} = req.params;
+  
+  
+  await PVideos.destroy({
+    where: {
+      id : videoId, // Assuming `videoUrl` is the identifier in `PVideos`
+    },
+  });
+  
+      res.status(201).send({ message: "Video Rejected(Deleted) Successfully"});
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  
   getAllVideos: async function (req, res) {
     try {
       let { channelId } = req.params;
@@ -348,6 +429,32 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  getOnePVideo: async function (req, res) {
+    try {
+      let { videoId } = req.params;
+      let video = await PVideos.findOne({
+        where: {
+          id: videoId,
+        },
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            attributes: ["id", "name", "totalSubscribers"],
+            include: {
+              model: Users,
+              as: "user",
+              attributes: ["profileUrl"],
+            },
+          },
+        ],
+      });
+      res.status(200).send(video);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
   getOneByTitle: async function (req, res) {
     try {
       let { query } = req.query;
@@ -605,6 +712,7 @@ module.exports = {
         where: {
           [Op.or]: [
             { title: { [Op.like]: `%${query}%` } }, // Search in video title
+            { description: { [Op.like]: `%${query}%` } }, // Search in video title
             { tags: { [Op.like]: `%${query}%` } }, // Search in video tags
             { category: { [Op.like]: `%${query}%` } }, // Search in video tags
           ],
@@ -614,6 +722,7 @@ module.exports = {
         where: {
           [Op.or]: [
             { name: { [Op.like]: `%${query}%` } },
+            { bio: { [Op.like]: `%${query}%` } },
             { tags: { [Op.like]: `%${query}%` } },
           ],
         },
@@ -686,4 +795,72 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  getFullVideos: async function (req, res) {
+    try {
+      let videos = await Videos.findAll({
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            include: [
+              {
+                model: Users,
+                as: "user",
+                attributes: ["profileUrl"],
+              },
+            ],
+          },
+        ],
+      });
+      videos = videos.length; 
+      res.status(201).send({
+        message: "Video count fetched successfully",
+        videos,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  getPVideos: async function (req, res) {
+    try {
+      let videos = await PVideos.findAll();
+      videos = videos.length; 
+      res.status(201).send({
+        message: "Video count fetched successfully",
+        videos,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  getAllPVideos: async function (req, res) {
+    try {
+      let videos = await PVideos.findAll({
+        include: [
+          {
+            model: Channels,
+            as: "channel",
+            include: [
+              {
+                model: Users,
+                as: "user",
+                attributes: ["profileUrl"],
+              },
+            ],
+          },
+        ],
+      });
+      res.status(201).send({
+        message: "Video count fetched successfully",
+        videos,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  
+  
 };

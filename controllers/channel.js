@@ -1,6 +1,7 @@
 const { Channels, sequelize } = require("../models");
 const { Users } = require("../models");
 const { ChannelSubscribers } = require("../models");
+const { PChannels } = require("../models");
 const { generateErrorInstance } = require("../utils");
 
 module.exports = {
@@ -27,7 +28,70 @@ module.exports = {
           message: "User already have channel",
         });
       }
+      channel = await Channels.findOne({
+        where : {
+          handleBy
+        }
+      })
+      if (channel) {
+        throw generateErrorInstance({
+          status: 409,
+          message: "Username alreay taken",
+        });
+      }
+      channel = await PChannels.create({
+        name,
+        bio,
+        handleBy,
+        tags,
+        contactEmail,
+        fkUserId: userId,
+      });
+      channel = await channel.toJSON();
 
+      res.status(200).send({
+        message: "Channel Moved to Pending Successfully",
+        channel,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  createS: async function (req, res) {
+    try {
+      let { name, bio, handleBy, tags, contactEmail } = req.body;
+      const { userId } = req.params;
+      if (!name && !bio && !handleBy && !tags && !contactEmail && !userId) {
+        throw generateErrorInstance({
+          status: 404,
+          message: "Required fields cannot be empty",
+        });
+      }
+      tags = tags.toString();
+      let channel = await Channels.findOne({
+        where: {
+          fkUserId: userId,
+        },
+      });
+
+      if (channel) {
+        throw generateErrorInstance({
+          status: 409,
+          message: "User already have channel",
+        });
+      }
+      channel = await Channels.findOne({
+        where : {
+          handleBy
+        }
+      })
+      if (channel) {
+        throw generateErrorInstance({
+          status: 409,
+          message: "Username alreay taken",
+        });
+      }
       channel = await Channels.create({
         name,
         bio,
@@ -319,4 +383,59 @@ module.exports = {
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
+  getFullChannels: async function (req, res) {
+    try {
+      let channels = await Channels.findAll({
+        include: [
+              {
+                model: Users,
+                as: "user",
+                attributes: ["profileUrl"],
+              },
+          
+        ],
+      });
+      channels = channels.length; 
+      res.status(201).send({
+        message: "Video count fetched successfully",
+        channels,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  getPChannels: async function (req, res) {
+    try {
+      let channels = await PChannels.findAll();
+      channels = channels.length; 
+      res.status(201).send({
+        message: "Video count fetched successfully",
+        channels,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  getAllPChannels: async function (req, res) {
+    try {
+      let channels = await PChannels.findAll({
+        include: [
+          {
+            model: Users,
+            as: "user"
+          },
+        ],
+      });
+      res.status(201).send({
+        message: "Channels count fetched successfully",
+        channels,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  
 };

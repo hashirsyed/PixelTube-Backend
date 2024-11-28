@@ -9,6 +9,9 @@ const controller = require("../controllers/channel");
 
 // Routes
 router.post("/:userId/channel/create", auth , controller.create);
+router.get("/channels/getFull", controller.getFullChannels);
+router.get("/channels/getAllPChannels", controller.getAllPChannels);
+router.get("/channels/getPending", controller.getPChannels);
 router.get("/:userId/channel/myChannelDetails", auth , controller.getMyChannelDetails);
 router.get("/:channelId/channel/channelDetails" , controller.getChannelDetails);
 router.put("/:userId/channel/edit", auth , controller.edit);

@@ -55,6 +55,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "fkUserId",
       as: "channel",
     });
+    User.hasOne(models.PChannels, {
+      foreignKey: "fkUserId",
+      as: "p_channel",
+    });
     User.belongsToMany(models.Channels, {
       through: models.ChannelSubscribers,
       foreignKey: "fkUserId",
