@@ -60,8 +60,7 @@ module.exports = {
   },
   createS: async function (req, res) {
     try {
-      let { name, bio, handleBy, tags, contactEmail } = req.body;
-      const { userId } = req.params;
+      let { userId, name, bio, handleBy, tags, contactEmail } = req.body;
       if (!name && !bio && !handleBy && !tags && !contactEmail && !userId) {
         throw generateErrorInstance({
           status: 404,
@@ -100,12 +99,34 @@ module.exports = {
         contactEmail,
         fkUserId: userId,
       });
+      await PChannels.destroy({
+        where: {
+          fkUserId : userId, // Assuming `userId` is the identifier in `PChannels`
+        },
+      });
       channel = await channel.toJSON();
 
       res.status(200).send({
         message: "Channel Created Successfully",
         channel,
       });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  delS: async function (req, res) {
+    try {
+      const {userId} = req.params;
+  
+  
+  await PChannels.destroy({
+    where: {
+      fkUserId : userId, // Assuming `videoUrl` is the identifier in `PVideos`
+    },
+  });
+  
+      res.status(201).send({ message: "Video Rejected(Deleted) Successfully"});
     } catch (err) {
       console.log(err);
       res.status(500).send(err.message || "Something went wrong!");
@@ -139,6 +160,30 @@ module.exports = {
     try {
       let { channelId } = req.params;
       let channel = await Channels.findOne({
+        where: {
+          id: channelId,
+        },
+        include: [
+          {
+            model: Users,
+            as: "user",
+            attributes: ["id","profileUrl"],
+          },
+        ],
+      });
+
+      res.status(201).send({
+        channel,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err.message || "Something went wrong!");
+    }
+  },
+  getPChannelDetails: async function (req, res) {
+    try {
+      let { channelId } = req.params;
+      let channel = await PChannels.findOne({
         where: {
           id: channelId,
         },
