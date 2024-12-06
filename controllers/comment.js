@@ -39,7 +39,7 @@ module.exports = {
   },
   getAllComments: async function (req, res) {
     try {
-      let { videoId } = req.params;// Assuming you send the creator's channelId in the request
+      let { videoId } = req.params;
   
       // Get all comments for the video
       let comments = await Comments.findAll({
@@ -59,23 +59,34 @@ module.exports = {
             },
           },
           {
-            model : Videos,
-            as : "video",
-            attributes : ["fkChannelId"]
-          }
+            model: Videos,
+            as: "video",
+            attributes: ["fkChannelId"],
+          },
         ],
       });
   
-      // Separate the creator's comment from the rest
-      let creatorComment = comments.filter(comment => comment.channel.id === comment.video.fkChannelId);
-      let otherComments = comments.filter(comment => comment.channel.id !== comment.video.fkChannelId);
+      console.log("Comments:", JSON.stringify(comments, null, 2)); // Debug log
+  
+      // Separate the creator's comment from the rest (null-safe logic)
+      let creatorComment = comments.filter(
+        comment => comment.channel?.id && comment.video?.fkChannelId && comment.channel.id === comment.video.fkChannelId
+      );
+  
+      let otherComments = comments.filter(
+        comment => comment.channel?.id && comment.video?.fkChannelId && comment.channel.id !== comment.video.fkChannelId
+      );
+  
+      if (!creatorComment.length) {
+        console.warn("No creator comment found for videoId:", videoId);
+      }
   
       // Combine the creator's comment at the top
       let sortedComments = [...creatorComment, ...otherComments];
   
       res.status(201).send(sortedComments);
     } catch (err) {
-      console.log(err);
+      console.error("Error:", err);
       res.status(500).send(err.message || "Something went wrong!");
     }
   },
