@@ -156,7 +156,7 @@ module.exports = {
         },
         order: [["createdAt", "DESC"]],
       });
-      res.status(201).send(videos);
+      res.status(200).send(videos);
     } catch (err) {
       console.log(err);
       res.status(500).send(err.message || "Something went wrong!");
