@@ -6,6 +6,7 @@ module.exports = {
   username: config.get("db.username"),
   password: config.get("db.password"),
   host: config.get("db.host"),
+  port: config.get("db.custom_port"),
   dialectOptions: {
     charset: 'utf8mb4',  // Set the charset to utf8mb4 for full Unicode support
   },
